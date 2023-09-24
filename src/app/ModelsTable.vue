@@ -7,7 +7,7 @@
     />
     <el-table
       :data="tableData.filter(
-        data => !search || 
+        data => !search ||
           data.Organ.toLowerCase().includes(search.toLowerCase()) ||
           data.Species.toLowerCase().includes(search.toLowerCase()) ||
           data.Note.toLowerCase().includes(search.toLowerCase()))"
@@ -18,11 +18,13 @@
         prop="Organ"
         label="Organ"
         width="100"
+        sortable
       />
       <el-table-column
         prop="Species"
         label="Species"
         width="100"
+        sortable
       />
       <el-table-column
         prop="Note"
@@ -33,7 +35,9 @@
         prop="Last modified"
         label="Last modified"
         width="250"
-      /> 
+        sortable
+        :sort-method="sortByModifiedDate"
+      />
       <el-table-column
         fixed="right"
         label="Action"
@@ -61,18 +65,18 @@
             Blackfynn
           </el-button>
         </template>
-      </el-table-column>   
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
 /* eslint-disable no-alert, no-console */
-import Vue from "vue";
-import models from './ModelsInformation'
 import { Button, Input, Table, TableColumn } from "element-ui";
-import lang from "element-ui/lib/locale/lang/en";
 import locale from "element-ui/lib/locale";
+import lang from "element-ui/lib/locale/lang/en";
+import Vue from "vue";
+import models from './ModelsInformation';
 
 locale.use(lang);
 Vue.use(Button);
@@ -101,6 +105,13 @@ export default {
     },
     handleBlackfynn: function(row) {
       window.open(row['Blackfynn dataset'], "_blank");
+    },
+    sortByModifiedDate: function(a, b) {
+      const lastModified = 'Last modified';
+      const dateA = new Date(a[lastModified]);
+      const dateB = new Date(b[lastModified]);
+
+      return dateA - dateB;
     },
   }
 };
