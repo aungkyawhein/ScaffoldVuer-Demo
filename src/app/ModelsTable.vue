@@ -1,10 +1,19 @@
 <template>
   <div>
-    <el-input
-      v-model="search"
-      size="mini"
-      placeholder="Type to search"
-    />
+    <el-row :gutter="10" :type="'flex'" :align="'middle'">
+      <el-col>
+        <el-input
+          v-model="search"
+          size="mini"
+          placeholder="Type to search"
+        />
+      </el-col>
+      <el-col>
+        <el-checkbox v-model="hideNote">
+          Hide Note
+        </el-checkbox>
+      </el-col>
+    </el-row>
     <el-table
       :data="tableData.filter(
         data => !search ||
@@ -12,7 +21,7 @@
           data.Species.toLowerCase().includes(search.toLowerCase()) ||
           data.Note.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%;"
-      height="600"
+      max-height="600"
     >
       <el-table-column
         prop="Organ"
@@ -30,6 +39,7 @@
         prop="Note"
         label="Note"
         width="200"
+        v-if="!hideNote"
       />
       <el-table-column
         prop="Last modified"
@@ -91,6 +101,7 @@ export default {
   data() {
     return {
       search: '',
+      hideNote: false,
     }
   },
   created: function() {
