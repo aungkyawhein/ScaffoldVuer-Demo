@@ -1,39 +1,46 @@
 <template>
   <div>
     <el-row :gutter="10" :type="'flex'" :align="'middle'">
-      <el-col>
+      <el-col :span="14">
         <el-input
           v-model="search"
           size="mini"
           placeholder="Type to search"
         />
       </el-col>
-      <el-col>
-        <el-checkbox v-model="hideNote">
+      <el-col :span="5">
+        <el-checkbox
+          v-model="hideNote"
+        >
           Hide Note
         </el-checkbox>
       </el-col>
+      <el-col :span="5">
+        <el-button
+          size="mini"
+          @click="downloadData"
+        >
+          Download Data
+        </el-button>
+      </el-col>
     </el-row>
     <el-table
-      :data="tableData.filter(
-        data => !search ||
-          data.Organ.toLowerCase().includes(search.toLowerCase()) ||
-          data.Species.toLowerCase().includes(search.toLowerCase()) ||
-          data.Note.toLowerCase().includes(search.toLowerCase()))"
+      :data="modifiedTableData"
       style="width: 100%;"
+      @sort-change="updateSortData"
       max-height="600"
     >
       <el-table-column
         prop="Organ"
         label="Organ"
         width="100"
-        sortable
+        sortable="custom"
       />
       <el-table-column
         prop="Species"
         label="Species"
         width="100"
-        sortable
+        sortable="custom"
       />
       <el-table-column
         prop="Note"
@@ -45,8 +52,7 @@
         prop="Last modified"
         label="Last modified"
         width="250"
-        sortable
-        :sort-method="sortByModifiedDate"
+        sortable="custom"
       />
       <el-table-column
         fixed="right"
@@ -102,10 +108,20 @@ export default {
     return {
       search: '',
       hideNote: false,
+      sortKey: '',
+      sortOrder: '',
     }
   },
   created: function() {
     this.getModelsInformation();
+  },
+  computed: {
+    modifiedTableData() {
+      return this.tableData
+        .filter(this.searchFilter)
+        .sort(this.sortData)
+        .map(this.noteFilter);
+    }
   },
   methods: {
     handleView: function(row) {
@@ -117,12 +133,56 @@ export default {
     handleBlackfynn: function(row) {
       window.open(row['Blackfynn dataset'], "_blank");
     },
-    sortByModifiedDate: function(a, b) {
-      const lastModified = 'Last modified';
-      const dateA = new Date(a[lastModified]);
-      const dateB = new Date(b[lastModified]);
+    searchFilter: function(data) {
+      return !this.search ||
+        data.Organ.toLowerCase().includes(this.search.toLowerCase()) ||
+        data.Species.toLowerCase().includes(this.search.toLowerCase()) ||
+        data.Note.toLowerCase().includes(this.search.toLowerCase());
+    },
+    sortData: function(a, b) {
+      if (this.sortOrder) {
+        const sortKey = this.sortKey;
+        const sortOrder = this.sortOrder === 'ascending' ? 1 : -1;
+        const lastModified = 'Last modified';
+        const isLastModifiedKey = sortKey === lastModified;
+        const sortA = isLastModifiedKey ? new Date(a[lastModified]) : a[sortKey];
+        const sortB = isLastModifiedKey ? new Date(b[lastModified]) : b[sortKey];
 
-      return dateA - dateB;
+        return sortOrder * (sortA < sortB ? -1 : 1);
+      }
+
+      return 0;
+    },
+    updateSortData: function(sortObj) {
+      this.sortKey = sortObj.prop;
+      this.sortOrder = sortObj.order;
+    },
+    noteFilter: function(data) {
+      const filteredData = {...data};
+      if (this.hideNote) {
+        delete filteredData.Note;
+      }
+      return filteredData;
+    },
+    downloadData: function() {
+      const modifiedTableDataString = JSON.stringify(this.modifiedTableData);
+      const blob = new Blob([modifiedTableDataString], {
+        type: 'application/json'
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Models_table_data.json';
+      a.click();
+      window.URL.revokeObjectURL(url);
+      console.table(this.modifiedTableData.map((data) => {
+        return {
+          Organ: data.Organ,
+          Species: data.Species,
+          Note: data.Note,
+          LastModified: data['Last modified'],
+        };
+      }));
     },
   }
 };
