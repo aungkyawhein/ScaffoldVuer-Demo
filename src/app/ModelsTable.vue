@@ -175,14 +175,6 @@ export default {
       a.download = 'Models_table_data.json';
       a.click();
       window.URL.revokeObjectURL(url);
-      console.table(this.modifiedTableData.map((data) => {
-        return {
-          Organ: data.Organ,
-          Species: data.Species,
-          Note: data.Note,
-          LastModified: data['Last modified'],
-        };
-      }));
     },
   }
 };
