@@ -17,12 +17,12 @@ describe('Table Search and Sorting Test', () => {
     // TODO - first run doesn't work because of API loading
     // The data is from google spreadsheet
     const totalRows = 28;
-    const TestOrgan = 'Bladder';
-    const TestOrganTotalRows = 4;
-    const TestSpecies = 'Rat';
-    const TestSpeciesTotalRows = 8;
-    const TestNote = 'Generic';
-    const TestNoteTotalRows = 10;
+    const testOrgan = 'Bladder';
+    const testOrganTotalRows = 4;
+    const testSpecies = 'Rat';
+    const testSpeciesTotalRows = 8;
+    const testNote = 'Generic';
+    const testNoteTotalRows = 10;
 
     // Alias
     cy.get('input[placeholder="Type to search"]')
@@ -46,19 +46,19 @@ describe('Table Search and Sorting Test', () => {
 
     // Test Organ
     cy.get('@searchInput')
-      .type(TestOrgan);
+      .type(testOrgan);
     cy.get('@firstCol')
       .contains('Liver')
       .should('not.exist');
     cy.get('@firstCol')
-      .contains(TestOrgan)
+      .contains(testOrgan)
       .should('exist');
     cy.get('@firstCol')
       .contains('Brain')
       .should('not.exist');
     cy.get('@row')
-      .filter(`:contains(${TestOrgan})`)
-      .should('have.length', TestOrganTotalRows);
+      .filter(`:contains(${testOrgan})`)
+      .should('have.length', testOrganTotalRows);
 
     // Clear search
     cy.get('@searchInput')
@@ -69,19 +69,19 @@ describe('Table Search and Sorting Test', () => {
 
     // Test Species
     cy.get('@searchInput')
-      .type(TestSpecies);
+      .type(testSpecies);
     cy.get('@secondCol')
       .contains('Liver')
       .should('not.exist');
     cy.get('@secondCol')
-      .contains(TestSpecies)
+      .contains(testSpecies)
       .should('exist');
     cy.get('@secondCol')
       .contains('Brain')
       .should('not.exist');
     cy.get('@row')
-      .filter(`:contains(${TestSpecies})`)
-      .should('have.length', TestSpeciesTotalRows);
+      .filter(`:contains(${testSpecies})`)
+      .should('have.length', testSpeciesTotalRows);
 
     // Clear search
     cy.get('@searchInput')
@@ -92,19 +92,19 @@ describe('Table Search and Sorting Test', () => {
 
     // Test Note
     cy.get('@searchInput')
-      .type(TestNote);
+      .type(testNote);
     cy.get('@thirdCol')
       .contains('Liver')
       .should('not.exist');
     cy.get('@thirdCol')
-      .contains(TestNote)
+      .contains(testNote)
       .should('exist');
     cy.get('@thirdCol')
       .contains('Brain')
       .should('not.exist');
     cy.get('@row')
-      .filter(`:contains(${TestNote})`)
-      .should('have.length', TestNoteTotalRows);
+      .filter(`:contains(${testNote})`)
+      .should('have.length', testNoteTotalRows);
   });
 
   // Sort
