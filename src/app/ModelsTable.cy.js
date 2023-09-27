@@ -109,9 +109,85 @@ describe('Table Search and Sorting Test', () => {
 
   // Sort
   it('should sort table columns', () => {
-    // Trigger sort by key
+    // variables
+    const organAscendingFirstRow = 'Bladder';
+    const organDescendingFirstRow = 'Whole body';
+    const speciesAscendingFirstRow = '';
+    const speciesDescendingFirstRow = 'Rat';
+    const lastModifiedAscendingFirstRow = 'Feb 27, 2020 20:57:43';
+    const lastModifiedDescendingFirstRow = '2 Febuary, 2023';
 
-    // Verify that the table is sorted as expected
+    // Alias
+    cy.get('.el-table__header-wrapper tr th:contains("Organ")')
+      .as('Organ');
+    cy.get('.el-table__header-wrapper tr th:contains("Species")')
+      .as('Species');
+    cy.get('.el-table__header-wrapper tr th:contains("Last modified")')
+      .as('Last modified');
+
+    // -------------------
+
+    // First click = ascending
+    cy.get('@Organ').click();
+    cy.get('@Organ').should('have.class', 'ascending');
+    cy.get('.el-table__body-wrapper table tbody .el-table__row')
+      .first()
+      .should('contain', organAscendingFirstRow);
+
+    // Second click = descending
+    cy.get('@Organ').click();
+    cy.get('@Organ').should('have.class', 'descending');
+    cy.get('.el-table__body-wrapper table tbody .el-table__row')
+      .first()
+      .should('contain', organDescendingFirstRow);
+
+    // Third click = clear
+    cy.get('@Organ').click();
+    cy.get('@Organ').should('not.have.class', 'ascending');
+    cy.get('@Organ').should('not.have.class', 'descending');
+
+    // -------------------
+
+    // First click = ascending
+    cy.get('@Species').click();
+    cy.get('@Species').should('have.class', 'ascending');
+    cy.get('.el-table__body-wrapper table tbody .el-table__row')
+      .first()
+      .should('contain', speciesAscendingFirstRow);
+
+    // Second click = descending
+    cy.get('@Species').click();
+    cy.get('@Species').should('have.class', 'descending');
+    cy.get('.el-table__body-wrapper table tbody .el-table__row')
+      .first()
+      .should('contain', speciesDescendingFirstRow);
+
+    // Third click = clear
+    cy.get('@Species').click();
+    cy.get('@Species').should('not.have.class', 'ascending');
+    cy.get('@Species').should('not.have.class', 'descending');
+
+    // -------------------
+
+    // First click = ascending
+    cy.get('.el-table__body-wrapper').scrollTo('right');
+    cy.get('@Last modified').click();
+    cy.get('@Last modified').should('have.class', 'ascending');
+    cy.get('.el-table__body-wrapper table tbody .el-table__row')
+      .first()
+      .should('contain', lastModifiedAscendingFirstRow);
+
+    // Second click = descending
+    cy.get('@Last modified').click();
+    cy.get('@Last modified').should('have.class', 'descending');
+    cy.get('.el-table__body-wrapper table tbody .el-table__row')
+      .first()
+      .should('contain', lastModifiedDescendingFirstRow);
+
+    // Third click = clear
+    cy.get('@Last modified').click();
+    cy.get('@Last modified').should('not.have.class', 'ascending');
+    cy.get('@Last modified').should('not.have.class', 'descending');
 
     // Test for each key: Organs, Species, and Last modified
   });
