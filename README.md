@@ -24,8 +24,23 @@ You should copy and paste the private key and service email to `VUE_APP_GOOGLE_P
 We recommand using Node Version Manager (NVM) to install different versions of node, the documentation for installing and using NVM can be found [here](https://github.com/nvm-sh/nvm). There are also many tutorials available.
 
 ## To run the app
+
 ```bash
 npm install
 npm run serve
 ```
 
+## To test
+
+```bash
+npm run cypress:open
+```
+
+- Select "Component Testing"
+- Select browser (Chrome)
+- Click "ModelsTable" from specs
+- Press "R" (or) "Run all tests" again (known issue)
+
+## Known issues
+
+The first run of the test will fail due to data loading. Still trying to intercept with mock data.
